@@ -1,7 +1,8 @@
 #!/usr/bin/ruby
 
+# ------------------------------- Methods -------------------------------
 
-# Get a list of all attached disks from diskutil
+# Get a list of all attached disks from /dev
 def disklist
 
 	disks = `ls -al /dev/disk* | egrep '.*disk[0-9]+$'`
@@ -14,7 +15,6 @@ def disklist
 		@identifiers << line.match(/\/dev\/.*$/)[0]
 	end
 
-	# puts @identifiers.class
 end
 
 
@@ -108,7 +108,13 @@ def get_smart(disk)
 	puts 
 	puts "-----------------------------------------------------"
 	puts
-	puts reallocated
+	
+	if reallocated
+		puts reallocated
+	else
+		puts "No reallocated sectors found."
+	end
+
 	puts wearout if wearout
 	puts
 
@@ -133,7 +139,7 @@ end
 
 
 
-
+# ------------------------------- Begin Script -------------------------------
 
 
 
@@ -142,6 +148,18 @@ end
 
 system 'clear'
 
+smartctl = `which smartctl`
+
+if smartctl.empty?
+	puts "It appears that smartmontools is either not installed, or can't be found in your $PATH."
+	puts "Drivetest needs smartmontools in order to run. Check your configuration and try again."
+	puts "More info: http://sourceforge.net/apps/trac/smartmontools/wiki"
+	exit!
+end
+
+
+
+
 pick_disk
 
 
@@ -149,11 +167,23 @@ pick_disk
 
 
 
-# @disk_info_list.each do |disk|
-# 	puts disk
-# end
 
-# puts @list.class
 
-# puts "#{@list}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
